@@ -1,20 +1,21 @@
 const mode = document.querySelector("#mode");
 const resultDiv = document.getElementById("result");
 const checkbox = document.querySelector("#flexSwitchCheckDefault");
-const priority = document.getElementById("floatingInput-3");
-    const reminder = document.getElementById("floatingInput-4");
-    const endDate = document.getElementById("floatingInput-2").value;
-    const taskName = document.getElementById("floatingInput-1").value;
-    const comments = document.getElementById("floatingTextarea").value;
+const reminder = document.getElementById("floatingInput-4");
+
 const saveButton =document.getElementById('save');
 let isChecked=false;
 saveButton.addEventListener("click", function () {
-    if(!endDate|| !taskName || !comments){
+    const taskName = document.getElementById("floatingInput-1").value;
+    const endDate = document.getElementById("floatingInput-2").value;
+    const comments = document.getElementById("floatingTextarea").value;
+    if (taskName === "" || endDate === "" || comments === ""){
         alert("Please fill all fields!");
         }else{
             let dateEnded = new Date(endDate);
             let currentTime = new Date();
-            console.log(dateEnded,currentTime)
+            dateEnded.setHours(0, 0, 0, 0);
+            currentTime.setHours(0, 0, 0, 0);
             // Checking if the time has passed or not
             if (dateEnded < currentTime) {
                 alert("The deadline you have set has already passed!")
@@ -23,8 +24,6 @@ saveButton.addEventListener("click", function () {
                 }
     }
 });
-    
-
 function toggleMode() {
     const cards = document.querySelectorAll(".card");
     const resultDiv = document.getElementById("result");
@@ -82,6 +81,11 @@ function saveTask() {
     formCard.style.opacity = "0";
     formCard.style.transform = "translateX(-500%)";
     const resultDiv = document.getElementById("result");
+    const priority = document.getElementById("floatingInput-3");
+    const reminder = document.getElementById("floatingInput-4");
+    const endDate = document.getElementById("floatingInput-2").value;
+    const taskName = document.getElementById("floatingInput-1").value;
+    const comments = document.getElementById("floatingTextarea").value;
     const priorityOption = priority.options[priority.selectedIndex].textContent;
     const reminderOption = reminder.options[reminder.selectedIndex].textContent;
 
@@ -130,9 +134,10 @@ function saveTask() {
     }, 300);
     document.getElementById("floatingInput-1").value = "";
     document.getElementById("floatingInput-2").value = "";
-    // document.getElementById('floatingInput-3').value = '';
-    // document.getElementById('floatingInput-4').value = '';
+    document.getElementById('floatingInput-3').value = '';
+    document.getElementById('floatingInput-4').value = '';
     document.getElementById("floatingTextarea").value = "";
+
     const title = taskDiv.querySelector("#title");
     const deleteButton = taskDiv.querySelector(".delete");
     const markDoneButton = taskDiv.querySelector(".mark-done");
