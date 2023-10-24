@@ -1,6 +1,29 @@
 const mode = document.querySelector("#mode");
 const resultDiv = document.getElementById("result");
 const checkbox = document.querySelector("#flexSwitchCheckDefault");
+const priority = document.getElementById("floatingInput-3");
+    const reminder = document.getElementById("floatingInput-4");
+    const endDate = document.getElementById("floatingInput-2").value;
+    const taskName = document.getElementById("floatingInput-1").value;
+    const comments = document.getElementById("floatingTextarea").value;
+const saveButton =document.getElementById('save');
+let isChecked=false;
+saveButton.addEventListener("click", function () {
+    if(!endDate|| !taskName || !comments){
+        alert("Please fill all fields!");
+        }else{
+            let dateEnded = new Date(endDate);
+            let currentTime = new Date();
+            console.log(dateEnded,currentTime)
+            // Checking if the time has passed or not
+            if (dateEnded < currentTime) {
+                alert("The deadline you have set has already passed!")
+                } else {
+                    saveTask();
+                }
+    }
+});
+    
 
 function toggleMode() {
     const cards = document.querySelectorAll(".card");
@@ -33,8 +56,6 @@ checkbox.addEventListener("change", () => {
 });
 
 document.getElementById("result").style.display = "none";
-
-const reminder = document.getElementById("floatingInput-4");
 const customTimeInput = document.getElementById("customTimeInput");
 reminder.addEventListener("change", function () {
     if (reminder.value === "4") {
@@ -61,11 +82,6 @@ function saveTask() {
     formCard.style.opacity = "0";
     formCard.style.transform = "translateX(-500%)";
     const resultDiv = document.getElementById("result");
-    const priority = document.getElementById("floatingInput-3");
-    const reminder = document.getElementById("floatingInput-4");
-    const endDate = document.getElementById("floatingInput-2").value;
-    const taskName = document.getElementById("floatingInput-1").value;
-    const comments = document.getElementById("floatingTextarea").value;
     const priorityOption = priority.options[priority.selectedIndex].textContent;
     const reminderOption = reminder.options[reminder.selectedIndex].textContent;
 
