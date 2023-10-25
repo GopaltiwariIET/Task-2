@@ -81,12 +81,12 @@ function saveTask() {
     formCard.style.opacity = "0";
     formCard.style.transform = "translateX(-500%)";
     const resultDiv = document.getElementById("result");
-    const priority = document.getElementById("floatingInput-3");
+    const priorityTag = document.getElementById("floatingInput-3");
     const reminder = document.getElementById("floatingInput-4");
     const endDate = document.getElementById("floatingInput-2").value;
     const taskName = document.getElementById("floatingInput-1").value;
     const comments = document.getElementById("floatingTextarea").value;
-    const priorityOption = priority.options[priority.selectedIndex].textContent;
+    const priorityOption = priorityTag.options[priorityTag.selectedIndex].textContent;
     const reminderOption = reminder.options[reminder.selectedIndex].textContent;
 
     const savedData = `
@@ -112,6 +112,64 @@ function saveTask() {
     </div>
     <div class="card-body" id="savedData">${savedData}</div>
     `;
+
+    const priority = document.getElementById('floatingInput-3').value;
+    const reminderValue = document.getElementById('floatingInput-4').value;
+
+    const uniqueID = generateUniqueID();
+
+    // Handle different reminder options
+    if (reminderOption === '4') {
+        // User selected "Other," handle custom time input
+        const customTime = document.getElementById('reminderWithTime').value;
+        // Store customTime in localStorage and set a reminder based on this time
+        // You can use the code I provided earlier to schedule notifications
+        const reminderData = {
+            taskName: taskName,
+            endDate: endDate,
+            priority: priority,
+            reminderOption: 'custom', // or 'other' or something unique
+            customTime: customTime,
+        };
+        localStorage.setItem('reminder_' + uniqueID, JSON.stringify(reminderData));
+    } else {
+        // Handle other reminder options (e.g., "Every 30 min," "Every hour," "Every day")
+        // Calculate the reminder time based on the selected option
+        // Store the reminder data in localStorage and schedule notifications
+        const reminderData = {
+            taskName: taskName,
+            endDate: endDate,
+            priority: priority,
+            reminderOption: reminderOption,
+        };
+        // Store reminderData in localStorage
+        localStorage.setItem('reminder_' + uniqueID, JSON.stringify(reminderData));
+    }
+
+// Function to generate a unique ID (you may need a more robust solution)
+function generateUniqueID() {
+    return 'reminder_' + new Date().getTime();
+}
+
+function scheduleUserDefinedNotification(reminderTime, taskName, priority) {
+    const currentTime = new Date().getTime();
+    const userDefinedTime = new Date(reminderTime).getTime();
+
+    if (userDefinedTime > currentTime) {
+        const timeUntilNotification = userDefinedTime - currentTime;
+        setTimeout(() => {
+            // Show the user-defined reminder notification
+            showNotification(taskName, priority);
+        }, timeUntilNotification);
+    }
+}
+
+// Example usage:
+const userDefinedReminderTime = '2023-10-30T14:30:00'; // Replace with the user's input
+const userTaskName = 'Your Task Name'; // Replace with the task name
+const userPriority = 'High'; // Replace with the priority
+
+scheduleUserDefinedNotification(userDefinedReminderTime, userTaskName, userPriority);
 
     const taskData = {
         taskName,
@@ -253,4 +311,55 @@ function renderSavedTasks() {
         indexing();
     });
 }
+
+// Retrieve reminder data from localStorage
+// const reminderData = JSON.parse(localStorage.getItem('reminder_' + reminder.id));
+
+// // Schedule notifications based on reminder data
+// const notificationTime = new Date(reminderData.time).getTime();
+// const currentTime = new Date().getTime();
+
+// if (notificationTime > currentTime) {
+//     const timeUntilNotification = notificationTime - currentTime;
+//     setTimeout(() => {
+//         // Show the reminder notification
+//         showNotification(reminderData.message);
+//     }, timeUntilNotification);
+// }
+// function showNotification(message) {
+//     if ('Notification' in window && Notification.permission === 'granted') {
+//         const notification = new Notification('Reminder', {
+//             body: message,
+//         });
+//     }
+// }
+
+// function checkReminders() {
+//     for (let i = 0; i < localStorage.length; i++) {
+//         const key = localStorage.key(i);
+//         if (key.startsWith('reminder_')) {
+//             const reminderData = JSON.parse(localStorage.getItem(key));
+//             const currentTime = new Date().getTime();
+//             const reminderTime = new Date(reminderData.endDate).getTime(); // Replace with your logic for calculating the reminder time
+
+//             if (reminderTime <= currentTime) {
+//                 // It's time to show the reminder notification
+//                 showNotification(reminderData.taskName, reminderData.priority);
+//             }
+//         }
+//     }
+// }
+
+// // Function to show the reminder notification
+// function showNotification(taskName, priority) {
+//     if ('Notification' in window && Notification.permission === 'granted') {
+//         const notification = new Notification('Task Reminder', {
+//             body: `Task: ${taskName}\nPriority: ${priority}`,
+//         });
+//     }
+// }
+
+// Check for reminders periodically (e.g., every minute)
+// setInterval(checkReminders, 1000 * 60);
+
 window.addEventListener('load', renderSavedTasks);
